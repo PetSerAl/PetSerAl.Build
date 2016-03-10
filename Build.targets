@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputGroupsOfChildProjectsToUse Condition="$(OutputGroupsOfChildProjectsToUse)==''">
+      BuiltProjectOutputGroup;        BuiltProjectOutputGroupDependencies;
+      DebugSymbolsProjectOutputGroup; DebugSymbolsProjectOutputGroupDependencies;
+      SatelliteDllsProjectOutputGroup;SatelliteDllsProjectOutputGroupDependencies;
+      DocumentationProjectOutputGroup;DocumentationProjectOutputGroupDependencies
+    </OutputGroupsOfChildProjectsToUse>
+    <SkipCopyUnchangedFiles Condition="$(SkipCopyUnchangedFiles)==''">True</SkipCopyUnchangedFiles>
+    <NotifyExtraFilesInDestination Condition="$(NotifyExtraFilesInDestination)==''">True</NotifyExtraFilesInDestination>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)Assembly.tasks" />
+  <Target Name="BuildProjects">
+    <ItemGroup>
+      <_Temporary Remove="@(_Temporary)" />
+    </ItemGroup>
+    <MSBuild Projects="@(Project)" Targets="Build;$(OutputGroupsOfChildProjectsToUse)">
+      <Output TaskParameter="TargetOutputs" ItemName="_Temporary" />
+    </MSBuild>
+    <ItemGroup>
+      <OutputFile Include="@(_Temporary->HasMetadata('TargetPath'))" />
+      <_Temporary Remove="@(_Temporary)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="IncludeFiles">
+    <AssignTargetPath RootFolder="." Files="@(File)">
+      <Output TaskParameter="AssignedFiles" ItemName="OutputFile" />
+    </AssignTargetPath>
+  </Target>
+  <Target Name="GetOutputFiles" DependsOnTargets="BuildProjects;IncludeFiles" />
+  <Target Name="GetDestinationFiles" DependsOnTargets="GetOutputFiles">
+    <ItemGroup>
+      <DestinationFile Include="@(OutputFile)">
+        <TargetPath>$(DestinationPrefix)%(TargetPath)</TargetPath>
+      </DestinationFile>
+    </ItemGroup>
+  </Target>
+  <Target Name="CopyDestinationFilesToDestination" DependsOnTargets="GetDestinationFiles">
+    <Copy SourceFiles="@(DestinationFile)" DestinationFiles="@(DestinationFile->'$(DestinationPath)%(TargetPath)')" SkipUnchangedFiles="$(SkipCopyUnchangedFiles)" />
+  </Target>
+  <Target Name="GetDestinationExtraFiles" DependsOnTargets="GetDestinationFiles">
+    <ItemGroup>
+      <_Temporary Remove="@(_Temporary)" />
+      <_Temporary Include="$(DestinationPath)$(DestinationPrefix)**" Exclude="@(DestinationFile->'$(DestinationPath)%(TargetPath)')" />
+    </ItemGroup>
+    <AssignTargetPath RootFolder="$(DestinationPath)$(DestinationPrefix)" Files="@(_Temporary)">
+      <Output TaskParameter="AssignedFiles" ItemName="DestinationExtraFile" />
+    </AssignTargetPath>
+    <ItemGroup>
+      <_Temporary Remove="@(_Temporary)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="NotifyExtraFilesInDestination" DependsOnTargets="GetDestinationExtraFiles" Condition="$(NotifyExtraFilesInDestination)=='True' and $(DeleteExtraFilesInDestination)!='True'">
+    <Message Text="%(DestinationExtraFile.TargetPath)" />
+  </Target>
+  <Target Name="DeleteExtraFilesInDestination" DependsOnTargets="GetDestinationExtraFiles" Condition="$(DeleteExtraFilesInDestination)=='True'">
+    <Delete Files="@(DestinationExtraFile)" />
+  </Target>
+  <Target Name="CopyToDestination" DependsOnTargets="CopyDestinationFilesToDestination;NotifyExtraFilesInDestination;DeleteExtraFilesInDestination" />
+  <Target Name="GetCommitFiles" DependsOnTargets="GetOutputFiles">
+    <ItemGroup>
+      <CommitFile Include="@(OutputFile)">
+        <TargetPath>$(CommitPrefix)%(TargetPath)</TargetPath>
+      </CommitFile>
+    </ItemGroup>
+  </Target>
+  <Target Name="CreateTreeFromCommitFiles" DependsOnTargets="GetCommitFiles" Condition="$(CommitTree)==''">
+    <CreateGitTree Files="@(CommitFile)">
+      <Output TaskParameter="Tree" PropertyName="CommitTree" />
+    </CreateGitTree>
+    <Message Text="Tree created: $(CommitTree)." />
+  </Target>
+  <Target Name="CreateCommitFromCommitTree" DependsOnTargets="CreateTreeFromCommitFiles">
+    <CreateGitCommit Tree="$(CommitTree)" Parents="$(CommitParents)" Message="$(CommitMessage)">
+      <Output TaskParameter="Commit" PropertyName="Commit" />
+    </CreateGitCommit>
+    <Message Text="Commit created: $(Commit)." />
+  </Target>
+  <Target Name="CreateCommit" DependsOnTargets="CreateCommitFromCommitTree" />
+</Project>

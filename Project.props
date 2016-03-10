@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="$(MSBuildAllProjects)!=''">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <MSBuildAllProjects Condition="$(MSBuildAllProjects)==''">$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <Configuration Condition="$(Configuration)==''">Release</Configuration>
+    <Platform Condition="$(Platform)==''">AnyCPU</Platform>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+    <HighEntropyVA>True</HighEntropyVA>
+    <BaseIntermediateOutputPath>Temp\Output\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),'StrongNameKey.snk'))!=''">
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+    <AssemblyOriginatorKeyFile>$([System.IO.Path]::Combine($([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),'StrongNameKey.snk')),'StrongNameKey.snk'))</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration)=='Debug'">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration)=='Release'">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>PdbOnly</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration)=='Debug' and $(Platform)=='AnyCPU'">
+    <OutputPath>Output\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration)=='Release' and $(Platform)=='AnyCPU'">
+    <OutputPath>Output\Release\</OutputPath>
+  </PropertyGroup>
+</Project>

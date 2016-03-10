@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" InitialTargets="EnsurePetSerAlBuildAssemblyCompiled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PetSerAlBuildAssemblySourceFile Include="$(MSBuildThisFileDirectory)Assembly\**\*.cs" />
+  </ItemGroup>
+  <Target Name="EnsurePetSerAlBuildAssemblyCompiled" Inputs="@(PetSerAlBuildAssemblySourceFile)" Outputs="$(MSBuildThisFileDirectory)Temp\PetSerAl.Build.dll">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)Temp\" />
+    <Csc
+      Sources="@(PetSerAlBuildAssemblySourceFile)"
+      TargetType="Library"
+      OutputAssembly="$(MSBuildThisFileDirectory)Temp\PetSerAl.Build.dll"
+      AdditionalLibPaths="$(MSBuildToolsPath)"
+      References="Microsoft.Build.Framework.dll;Microsoft.Build.Tasks.Core.dll;Microsoft.Build.Utilities.Core.dll"
+    />
+  </Target>
+  <UsingTask TaskName="PetSerAl.Build.CreateGitCommit" AssemblyFile="$(MSBuildThisFileDirectory)Temp\PetSerAl.Build.dll" />
+  <UsingTask TaskName="PetSerAl.Build.CreateGitTree" AssemblyFile="$(MSBuildThisFileDirectory)Temp\PetSerAl.Build.dll" />
+  <UsingTask TaskName="PetSerAl.Build.PrintMetadata" AssemblyFile="$(MSBuildThisFileDirectory)Temp\PetSerAl.Build.dll" />
+</Project>
