@@ -19,7 +19,9 @@
       <Output TaskParameter="TargetOutputs" ItemName="_Temporary" />
     </MSBuild>
     <ItemGroup>
-      <OutputFile Include="@(_Temporary->HasMetadata('TargetPath'))" />
+      <OutputFile Include="@(_Temporary->HasMetadata('TargetPath'))">
+        <TargetPath>%(_Temporary.OutputPrefix)%(_Temporary.TargetPath)</TargetPath>
+      </OutputFile>
       <_Temporary Remove="@(_Temporary)" />
     </ItemGroup>
   </Target>
