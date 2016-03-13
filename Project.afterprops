@@ -2,6 +2,9 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.6</TargetFrameworkVersion>
+    <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath)==''">Temp\Output\$(OutputPrefix)</BaseIntermediateOutputPath>
+    <OutputPath Condition="$(OutputPath)=='' and ($(Configuration)=='Debug' or $(Configuration)=='Release') and $(Platform)=='AnyCPU'">Output\$(OutputPrefix)$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition="$(TargetFrameworkVersion)=='v2.0'">$(DefineConstants);NETv2Plus</DefineConstants>

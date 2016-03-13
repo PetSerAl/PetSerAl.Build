@@ -5,10 +5,8 @@
     <ReferenceAssembliesPath Condition="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),'Reference Assemblies\file'))!=''">$([System.IO.Path]::Combine($([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),'Reference Assemblies\file')),'Reference Assemblies\'))</ReferenceAssembliesPath>
     <Configuration Condition="$(Configuration)==''">Release</Configuration>
     <Platform Condition="$(Platform)==''">AnyCPU</Platform>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
     <HighEntropyVA>True</HighEntropyVA>
-    <BaseIntermediateOutputPath>Temp\Output\$(OutputPrefix)</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),'StrongNameKey.snk'))!=''">
     <SignAssembly>True</SignAssembly>
@@ -32,8 +30,5 @@
   <PropertyGroup Condition="$(Platform)=='AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="($(Configuration)=='Debug' or $(Configuration)=='Release') and $(Platform)=='AnyCPU'">
-    <OutputPath>Output\$(OutputPrefix)$(Configuration)\</OutputPath>
   </PropertyGroup>
 </Project>
