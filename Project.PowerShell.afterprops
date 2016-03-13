@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <TargetPowerShellVersion Condition="$(TargetPowerShellVersion)==''">v5.0</TargetPowerShellVersion>
+    <ReferencePath Condition="$(ReferenceAssembliesPath)!='' and ($(TargetPowerShellVersion)=='v2.0' or $(TargetPowerShellVersion)=='v3.0' or $(TargetPowerShellVersion)=='v4.0' or $(TargetPowerShellVersion)=='v5.0')">$(ReferencePath);$(ReferenceAssembliesPath)PowerShell\$(TargetPowerShellVersion)\</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition="$(TargetPowerShellVersion)=='v2.0'">$(DefineConstants);PSv2Plus</DefineConstants>
+    <DefineConstants Condition="$(TargetPowerShellVersion)=='v3.0'">$(DefineConstants);PSv2Plus;PSv3Plus</DefineConstants>
+    <DefineConstants Condition="$(TargetPowerShellVersion)=='v4.0'">$(DefineConstants);PSv2Plus;PSv3Plus;PSv4Plus</DefineConstants>
+    <DefineConstants Condition="$(TargetPowerShellVersion)=='v5.0'">$(DefineConstants);PSv2Plus;PSv3Plus;PSv4Plus;PSv5Plus</DefineConstants>
+  </PropertyGroup>
+</Project>
