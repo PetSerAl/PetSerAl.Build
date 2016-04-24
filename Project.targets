@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <Target Name="BuildAndReturnOutputFiles" DependsOnTargets="Build" Returns="@(OutputFileToReturn)">
+    <ItemGroup>
+      <_Temporary1 Remove="@(_Temporary1)" />
+      <_Temporary2 Remove="@(_Temporary2)" />
+    </ItemGroup>
+    <FindUnderPath Path="$(OutDir)" Files="@(FileWrites)" UpdateToAbsolutePaths="True">
+      <Output TaskParameter="InPath" ItemName="_Temporary1"/>
+    </FindUnderPath>
+    <AssignTargetPath RootFolder="$(OutDir)" Files="@(_Temporary1)">
+      <Output TaskParameter="AssignedFiles" ItemName="_Temporary2" />
+    </AssignTargetPath>
+    <ItemGroup>
+      <OutputFileToReturn Include="@(_Temporary2)">
+        <TargetPath>$(OutputPrefix)%(TargetPath)</TargetPath>
+      </OutputFileToReturn>
+      <_Temporary1 Remove="@(_Temporary1)" />
+      <_Temporary2 Remove="@(_Temporary2)" />
+    </ItemGroup>
+  </Target>
+</Project>
